@@ -14,7 +14,7 @@
     "db:setup": "prisma db push && tsx prisma/seed.ts"
   },
   "keywords": ["robotics", "iot", "embedded", "automation", "api", "cms"],
-  "author": "R-IoTSys",
+  "author": "Atef (Tunis, Tunisia)",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.19.1",
