@@ -300,17 +300,15 @@ sudo certbot --nginx -d r-iotsys.tn -d www.r-iotsys.tn --non-interactive --agree
 
 ---
 
-## 👨‍💻 Author & Contact
+## 👨‍💻 Author
 
 **Atef**
-- 🌐 **Website**: [https://r-iotsys.tn](https://r-iotsys.tn)
-- 📧 **Contact**: [contact@r-iotsys.tn](mailto:contact@r-iotsys.tn)
-- 📍 **Location**: Tunis, Tunisia
 - 🐙 **GitHub**: [@Atef-AK](https://github.com/Atef-AK)
 
 ---
 
 <div align="center">
-  <sub>Built with precision for the future of connected hardware & industrial automation. © 2026 R-IoTSys by Atef. All rights reserved.</sub>
+  <sub>Built with precision for the future of connected hardware & industrial automation. © 2026 R-IoTSys. All rights reserved.</sub>
 </div>
+
 
