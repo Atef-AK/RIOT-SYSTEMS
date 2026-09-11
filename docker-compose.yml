@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: riotsys_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-riotsys_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-riotsys_secure_password_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-riotsys_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - riotsys_network
+
+  # Node.js Express Backend REST API
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    container_name: riotsys_backend
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-riotsys_user}:${POSTGRES_PASSWORD:-riotsys_secure_password_2026}@postgres:5432/${POSTGRES_DB:-riotsys_db}?schema=public
+      JWT_SECRET: ${JWT_SECRET:-riotsys_super_secret_jwt_key_9928174625_production_engineering}
+      JWT_EXPIRES_IN: 7d
+      CORS_ORIGIN: "http://localhost,http://localhost:5173,http://51.210.40.27,https://r-iotsys.tn,https://www.r-iotsys.tn"
+      UPLOAD_DIR: "./uploads"
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      CONTACT_RECEIVER_EMAIL: ${CONTACT_RECEIVER_EMAIL:-contact@r-iotsys.tn}
+    volumes:
+      - uploads_data:/app/uploads
+    ports:
+      - "5000:5000"
+    networks:
+      - riotsys_network
+
+  # React Frontend + Nginx Reverse Proxy
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    container_name: riotsys_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - riotsys_network
+
+volumes:
+  postgres_data:
+  uploads_data:
+
+networks:
+  riotsys_network:
+    driver: bridge

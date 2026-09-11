@@ -1,0 +1,233 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum MessageStatus {
+  NEW
+  READ
+  IN_PROGRESS
+  REPLIED
+  ARCHIVED
+}
+
+model User {
+  id           String      @id @default(uuid())
+  email        String      @unique
+  passwordHash String
+  name         String
+  role         Role        @default(ADMIN)
+  status       UserStatus  @default(ACTIVE)
+  avatar       String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  activities   ActivityLog[]
+
+  @@map("users")
+}
+
+model Page {
+  id          String    @id @default(uuid())
+  slug        String    @unique
+  title       String
+  metaTitle   String?
+  metaDesc    String?
+  isPublished Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  sections    Section[]
+
+  @@map("pages")
+}
+
+model Section {
+  id          String   @id @default(uuid())
+  pageId      String
+  page        Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  sectionType String
+  title       String?
+  subtitle    String?
+  content     String?  // JSON string or Markdown text
+  order       Int      @default(0)
+  isEnabled   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("sections")
+}
+
+model Service {
+  id           String   @id @default(uuid())
+  slug         String   @unique
+  title        String
+  icon         String   // Lucide icon name or SVG
+  category     String   // Robotics, IoT, Embedded, Automation, AI, etc.
+  shortDesc    String
+  fullDesc     String   // Detailed markdown/html
+  coverImage   String?
+  features     String   // JSON string array of features
+  technologies String   // JSON string array of tech tags
+  order        Int      @default(0)
+  isPublished  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("services")
+}
+
+model Project {
+  id             String   @id @default(uuid())
+  slug           String   @unique
+  title          String
+  category       String   // Robotics, IoT, Embedded, Automation, AI, etc.
+  summary        String
+  challenge      String?
+  solution       String?
+  results        String?
+  clientName     String?
+  clientIndustry String?
+  year           String?
+  coverImage     String
+  gallery        String?  // JSON string array of image URLs
+  technologies   String   // JSON string array of tags
+  featured       Boolean  @default(false)
+  published      Boolean  @default(true)
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model Technology {
+  id         String   @id @default(uuid())
+  name       String
+  category   String   // HARDWARE, COMMUNICATION, SOFTWARE, AI
+  icon       String?
+  isFeatured Boolean  @default(false)
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("technologies")
+}
+
+model Testimonial {
+  id          String   @id @default(uuid())
+  clientName  String
+  company     String
+  position    String
+  content     String
+  rating      Int      @default(5)
+  avatar      String?
+  isPublished Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("testimonials")
+}
+
+model TeamMember {
+  id          String   @id @default(uuid())
+  name        String
+  role        String
+  bio         String?
+  photo       String?
+  linkedin    String?
+  github      String?
+  skills      String?  // JSON string array
+  isPublished Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("team_members")
+}
+
+model ContactMessage {
+  id            String        @id @default(uuid())
+  name          String
+  company       String?
+  email         String
+  phone         String?
+  country       String?
+  projectType   String
+  budgetRange   String?
+  message       String
+  attachmentUrl String?
+  status        MessageStatus @default(NEW)
+  internalNotes String?
+  ipAddress     String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@map("contact_messages")
+}
+
+model SiteSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  category  String   @default("GENERAL") // GENERAL, SEO, SOCIAL, CONTACT, ANALYTICS
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model NavigationItem {
+  id        String   @id @default(uuid())
+  label     String
+  url       String
+  order     Int      @default(0)
+  target    String   @default("_self")
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("navigation_items")
+}
+
+model Media {
+  id           String   @id @default(uuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  url          String
+  altText      String?
+  createdAt    DateTime @default(now())
+
+  @@map("media")
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userName  String
+  action    String
+  entity    String
+  entityId  String?
+  details   String?  // JSON or text
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@map("activity_logs")
+}
