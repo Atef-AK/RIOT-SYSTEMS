@@ -6,11 +6,12 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting R-IoTSys database seed...');
 
-  // 1. Create Default Super Admin
-  const adminEmail = 'admin@r-iotsys.tn';
+  // 1. Create Default Super Admin from Environment Variables
+  const adminEmail = process.env.INITIAL_ADMIN_EMAIL || 'admin@example.com';
+  const rawAdminPassword = process.env.INITIAL_ADMIN_PASSWORD || 'ChangeMeImmediately123!';
   const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
 
-  const passwordHash = await bcrypt.hash('Admin@Riotsys2026!', 12);
+  const passwordHash = await bcrypt.hash(rawAdminPassword, 12);
 
   if (!existingAdmin) {
     await prisma.user.create({
@@ -22,13 +23,13 @@ async function main() {
         status: UserStatus.ACTIVE,
       },
     });
-    console.log('✅ Super Admin user created: admin@r-iotsys.tn / Admin@Riotsys2026!');
+    console.log(`✅ Super Admin user created: ${adminEmail}`);
   } else {
     await prisma.user.update({
       where: { email: adminEmail },
       data: { passwordHash, status: UserStatus.ACTIVE, role: Role.SUPER_ADMIN },
     });
-    console.log('✅ Super Admin credentials updated.');
+    console.log(`✅ Super Admin user updated: ${adminEmail}`);
   }
 
   // 2. Site Settings

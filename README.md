@@ -246,17 +246,8 @@ docker compose exec backend npm run prisma:seed
 
 The administrative portal is accessible at `/admin`.
 
-```text
-┌────────────────────────────────────────────────────────┐
-│               R-IoTSys™ Admin Portal                   │
-│         https://r-iotsys.tn/admin/login                │
-├─────────────────────────┬──────────────────────────────┤
-│ Default Admin Account   │ admin@r-iotsys.tn            │
-│ Initial Password        │ Admin@Riotsys2026!           │
-│ Access Level            │ SUPER_ADMIN                  │
-└─────────────────────────┴──────────────────────────────┘
-```
-> ⚠️ **Security Notice**: Update the default super admin password immediately after initial setup via the **Admin Users** panel.
+Super admin credentials can be configured during initial setup using environment variables (`INITIAL_ADMIN_EMAIL` and `INITIAL_ADMIN_PASSWORD`).
+
 
 ---
 
@@ -295,7 +286,7 @@ The deployment architecture includes automated certificate lifecycle management 
 
 ```bash
 # Automated certificate setup
-sudo certbot --nginx -d r-iotsys.tn -d www.r-iotsys.tn --non-interactive --agree-tos -m contact@r-iotsys.tn
+sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com --non-interactive --agree-tos -m admin@yourdomain.com
 ```
 
 ---
