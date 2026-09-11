@@ -50,12 +50,11 @@ app.use(
       if (
         config.nodeEnv === 'development' ||
         config.corsOrigin.includes(origin) ||
-        origin.includes('r-iotsys.tn') ||
-        origin.includes('51.210.40.27')
+        config.corsOrigin.includes('*')
       ) {
         return callback(null, true);
       }
-      return callback(null, true); // Allow all legitimate origins
+      return callback(null, true); // Fallback allow
     },
     credentials: true,
   })

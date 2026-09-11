@@ -29,16 +29,16 @@ services:
     environment:
       PORT: 5000
       NODE_ENV: production
-      DATABASE_URL: postgresql://${POSTGRES_USER:-riotsys_user}:${POSTGRES_PASSWORD:-riotsys_secure_password_2026}@postgres:5432/${POSTGRES_DB:-riotsys_db}?schema=public
-      JWT_SECRET: ${JWT_SECRET:-riotsys_super_secret_jwt_key_9928174625_production_engineering}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-riotsys_db}?schema=public
+      JWT_SECRET: ${JWT_SECRET:-change_this_secret_key_in_production}
       JWT_EXPIRES_IN: 7d
-      CORS_ORIGIN: "http://localhost,http://localhost:5173,http://51.210.40.27,https://r-iotsys.tn,https://www.r-iotsys.tn"
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173,http://localhost}
       UPLOAD_DIR: "./uploads"
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
-      CONTACT_RECEIVER_EMAIL: ${CONTACT_RECEIVER_EMAIL:-contact@r-iotsys.tn}
+      CONTACT_RECEIVER_EMAIL: ${CONTACT_RECEIVER_EMAIL:-}
     volumes:
       - uploads_data:/app/uploads
     ports:
